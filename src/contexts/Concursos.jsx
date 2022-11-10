@@ -8,7 +8,11 @@ const ConcursosContext = createContext({
     concursos: [],
     escolaridades: [],
     estados: [],
-    tipos: []
+    tipos: [],
+    filterTipo: '',
+    filterSalario: 0,
+    filterEstado: '',
+    filterEscolaridade: ''
 });
 
 export const ConcursosProvider = ({ children }) => {
@@ -17,6 +21,13 @@ export const ConcursosProvider = ({ children }) => {
     const [escolaridades, setEscolaridades] = useState([]);
     const [estados, setEstados] = useState([]);
     const [tipos, setTipos] = useState([]);
+
+    const [filterTipo, setFilterTipo] = useState("");
+    const [filterSalario, setFilterSalario] = useState(0);
+    const [filterEstado, setFilterEstado] = useState("");
+    const [filterEscolaridade, setFilterEscolaridade] = useState("");
+
+    const [concursosFiltred, setConcursosFiltred] = useState([]);
 
     const getAndSetTipos = () => {
         const tiposMapped = concursos
@@ -28,22 +39,37 @@ export const ConcursosProvider = ({ children }) => {
 
     const getAndSetEstados = () => {
         const estadosMapped = concursos
-            .map(({ estado }) => estado.split(/(\s\e\s|\,)/g))
+            .map(({ estados }) => estados)
             .reduce((ac, el) => [...ac, ...el], [])
-            .map(estado => `${estado}`.trim())
-            .filter(estado => estado.length >= 2)
             .reduce(reduceUnique, []);
         setEstados(estadosMapped);
     };
 
     const getAndSetEscolaridades = () => {
         const escolaridadesMapped = concursos
-            .map(({ escolaridade }) => escolaridade.split(/(\s\e\s|\,)/g))
+            .map(({ escolaridades }) => escolaridades)
             .reduce((ac, el) => [...ac, ...el], [])
-            .map(esc => `${esc}`.trim())
-            .filter(esc => esc.length > 2)
             .reduce(reduceUnique, []);
         setEscolaridades(escolaridadesMapped);
+    };
+
+    const filterConcursoByTipo = (concurso) => {
+        if (!filterTipo) return true;
+        return `${concurso.tipo}`.trim() === filterTipo;
+    };
+
+    const filterConcursoBySalario = (concurso) => {
+        return concurso.salario >= filterSalario;
+    };
+
+    const filterConcursoByEstado = (concurso) => {
+        if (!filterEstado) return true;
+        return [...concurso.estados].includes(filterEstado);
+    };
+
+    const filterConcursoByEscolaridade = (concurso) => {
+        if (!filterEscolaridade) return true;
+        return [...concurso.escolaridades].includes(filterEscolaridade);
     };
 
     useEffect(() => {
@@ -61,12 +87,29 @@ export const ConcursosProvider = ({ children }) => {
         getAndSetTipos();
     }, [concursos]);
 
+    useEffect(() => {
+        const filtred = concursos
+            .filter(filterConcursoByTipo)
+            .filter(filterConcursoBySalario)
+            .filter(filterConcursoByEstado)
+            .filter(filterConcursoByEscolaridade);
+        setConcursosFiltred(filtred);
+    }, [filterTipo, filterSalario, filterEstado, filterEscolaridade, concursos]);
+
     return <ConcursosContext.Provider
         value={{
-            concursos,
+            concursos: concursosFiltred,
             escolaridades,
             estados,
-            tipos
+            tipos,
+            filterTipo,
+            setFilterTipo,
+            filterSalario,
+            setFilterSalario,
+            filterEstado,
+            setFilterEstado,
+            filterEscolaridade,
+            setFilterEscolaridade
         }}
     >
         {children}
