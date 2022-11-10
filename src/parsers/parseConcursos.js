@@ -29,7 +29,30 @@ const parseConcurso = (concurso) => {
         .map(escolaridade => `${escolaridade}`.trim())
         .filter(escolaridade => escolaridade.length >= 2);
 
+    concursoParsed.id = generateId(concurso);
+
     return concursoParsed;
+};
+
+const generateId = (concurso) => {
+    const concursoLocal = { ...concurso };
+    delete concursoLocal.inicio;
+    delete concursoLocal.encerramento;
+    delete concursoLocal.inscricoes;
+
+    return hashCode(Object.values(concursoLocal).join()).toFixed();
+};
+
+const hashCode = (str) => {
+    var hash = 0,
+        i, chr;
+    if (str.length === 0) return hash;
+    for (i = 0; i < str.length; i++) {
+        chr = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0;
+    }
+    return hash;
 };
 
 const parseDateOrNull = (date) => {

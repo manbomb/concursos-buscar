@@ -10,7 +10,7 @@ const ListConcursos = () => {
     } = useContext(ConcursosContext);
 
     return <div className={styles.container}>
-        {concursos.map(concurso => <ConcursoItem concurso={concurso} key={`${concurso.link}${concurso.instituicao}`} />)}
+        {concursos.map(concurso => <ConcursoItem concurso={concurso} key={concurso.id} />)}
     </div>
 };
 
