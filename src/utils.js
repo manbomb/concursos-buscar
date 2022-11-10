@@ -1,4 +1,5 @@
 const parseSalario = (str = "") => {
+    if (!str) return null;
     return parseFloat(str.replace(/[\R\$\s\.]/g, "").replace(",", "."));
 };
 
