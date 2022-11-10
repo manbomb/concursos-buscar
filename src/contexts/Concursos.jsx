@@ -16,6 +16,15 @@ export const ConcursosProvider = ({ children }) => {
     const [concursos, setConcursos] = useState([]);
     const [escolaridades, setEscolaridades] = useState([]);
     const [estados, setEstados] = useState([]);
+    const [tipos, setTipos] = useState([]);
+
+    const getAndSetTipos = () => {
+        const tiposMapped = concursos
+            .map(({ tipo }) => tipo)
+            .map(tipo => `${tipo}`.trim())
+            .reduce(reduceUnique, []);
+        setTipos(tiposMapped);
+    };
 
     const getAndSetEstados = () => {
         const estadosMapped = concursos
@@ -47,19 +56,17 @@ export const ConcursosProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        console.log(concursos[0]);
         getAndSetEscolaridades();
         getAndSetEstados();
+        getAndSetTipos();
     }, [concursos]);
-
-    useEffect(() => {
-        console.log(estados);
-    }, [estados]);
 
     return <ConcursosContext.Provider
         value={{
             concursos,
-            escolaridades
+            escolaridades,
+            estados,
+            tipos
         }}
     >
         {children}
