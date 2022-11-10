@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    min-height: 10px;
+    background-color: lightblue;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 10px;
+}

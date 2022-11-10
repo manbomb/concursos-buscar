@@ -12,7 +12,11 @@ const ConcursosContext = createContext({
     filterTipo: '',
     filterSalario: 0,
     filterEstado: '',
-    filterEscolaridade: ''
+    filterEscolaridade: '',
+    setFilterTipo: (value) => { },
+    setFilterSalario: (value) => { },
+    setFilterEstado: (value) => { },
+    setFilterEscolaridade: (value) => { }
 });
 
 export const ConcursosProvider = ({ children }) => {
